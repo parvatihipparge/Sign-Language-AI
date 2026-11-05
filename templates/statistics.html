@@ -1,0 +1,173 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="container">
+    <div class="page-header">
+        <h2><i class="fas fa-chart-bar"></i> System Statistics Overview</h2>
+        <p class="subtitle">Insights and analytics about your sign language detection usage</p>
+    </div>
+    
+    <div class="stats-box">
+        <div class="stat-item">
+            <h3>{{ stats.total_predictions or 0 }}</h3>
+            <p><i class="fas fa-tasks"></i> Total Predictions</p>
+        </div>
+        <div class="stat-item success">
+            <h3>{{ stats.successful_predictions or 0 }}</h3>
+            <p><i class="fas fa-check-circle"></i> Successful</p>
+        </div>
+        <div class="stat-item error">
+            <h3>{{ stats.failed_predictions or 0 }}</h3>
+            <p><i class="fas fa-times-circle"></i> Failed</p>
+        </div>
+        <div class="stat-item info">
+            <h3>{{ recent_predictions or 0 }}</h3>
+            <p><i class="fas fa-clock"></i> Recent (7 days)</p>
+        </div>
+    </div>
+    
+    <div class="charts-grid">
+        <div class="chart-container large-chart">
+            <div class="chart-header">
+                <h3><i class="fas fa-chart-line"></i> Gesture Recognition Trends</h3>
+            </div>
+            <div class="chart-body">
+                <canvas id="gestureChart"></canvas>
+            </div>
+        </div>
+
+        <div class="chart-container large-chart">
+            <div class="chart-header">
+                <h3><i class="fas fa-chart-pie"></i> Prediction Success Rate</h3>
+            </div>
+            <div class="chart-body">
+                <canvas id="successChart"></canvas>
+            </div>
+        </div>
+
+        <div class="chart-container large-chart">
+            <div class="chart-header">
+                <h3><i class="fas fa-chart-pie"></i> Top Gestures Distribution</h3>
+            </div>
+            <div class="chart-body">
+                <canvas id="topGesturesDoughnut"></canvas>
+            </div>
+        </div>
+        
+        <div class="chart-container large-chart">
+            <div class="chart-header">
+                <h3><i class="fas fa-chart-line"></i> Weekly Usage Trends</h3>
+            </div>
+            <div class="chart-body">
+                <canvas id="weeklyTrendsChart"></canvas>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script>
+const ctx1 = document.getElementById('gestureChart').getContext('2d');
+const gestureStats = {{ gesture_stats | tojson }};
+const labels = gestureStats.map(stat => stat[0]);
+const data = gestureStats.map(stat => stat[1]);
+
+new Chart(ctx1, {
+    type: 'bar',
+    data: {
+        labels: labels,
+        datasets: [{
+            label: 'Predictions',
+            data: data,
+            backgroundColor: 'rgba(16, 185, 129, 0.6)',
+            borderColor: 'rgba(16, 185, 129, 1)',
+            borderWidth: 1
+        }]
+    },
+    options: {
+        responsive: true,
+        scales: {
+            y: { beginAtZero: true }
+        }
+    }
+});
+
+const ctx2 = document.getElementById('successChart').getContext('2d');
+const successful = {{ stats.successful_predictions or 0 }};
+const failed = {{ stats.failed_predictions or 0 }};
+
+new Chart(ctx2, {
+    type: 'pie',
+    data: {
+        labels: ['Successful', 'Failed'],
+        datasets: [{
+            data: [successful, failed],
+            backgroundColor: ['#10b981', '#ef4444'],
+            borderWidth: 1
+        }]
+    },
+    options: {
+        responsive: true,
+        plugins: {
+            legend: {
+                position: 'top',
+            }
+        }
+    }
+});
+
+const ctx3 = document.getElementById('topGesturesDoughnut').getContext('2d');
+const topLabels = labels.slice(0, 5); // Top 5 gestures
+const topData = data.slice(0, 5);
+
+new Chart(ctx3, {
+    type: 'doughnut',
+    data: {
+        labels: topLabels,
+        datasets: [{
+            data: topData,
+            backgroundColor: [
+                '#10b981', '#059669', '#047857', '#065f46', '#064e3b'
+            ],
+            borderWidth: 1
+        }]
+    },
+    options: {
+        responsive: true,
+        plugins: {
+            legend: {
+                position: 'right',
+            }
+        }
+    }
+});
+
+const ctx4 = document.getElementById('weeklyTrendsChart').getContext('2d');
+new Chart(ctx4, {
+    type: 'line',
+    data: {
+        labels: ['Week 1', 'Week 2', 'Week 3', 'Week 4'],
+        datasets: [{
+            label: 'Usage Time (minutes)',
+            data: [120, 190, 230, 280],
+            fill: false,
+            borderColor: 'rgba(54, 162, 235, 1)',
+            tension: 0.1
+        }, {
+            label: 'Successful Detections',
+            data: [85, 120, 170, 210],
+            fill: false,
+            borderColor: 'rgba(75, 192, 192, 1)',
+            tension: 0.1
+        }]
+    },
+    options: {
+        responsive: true,
+        scales: {
+            y: {
+                beginAtZero: true
+            }
+        }
+    }
+});
+</script>
+{% endblock %}

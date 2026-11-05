@@ -1,0 +1,43 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="detect">
+    <h2><i class="fas fa-camera"></i> Real-Time Sign Detection</h2>
+    
+    <div class="detect-container">
+        <div class="video-wrapper">
+            <video id="video" autoplay muted></video>
+            <canvas id="canvas" style="display:none;"></canvas>
+        </div>
+        
+        <div class="detection-info">
+            <div class="output">
+                <div class="output-row">
+                    <strong><i class="fas fa-tag"></i> Prediction:</strong> 
+                    <span id="label" class="highlight">---</span>
+                </div>
+                <div class="output-row">
+                    <strong><i class="fas fa-percentage"></i> Confidence:</strong> 
+                    <span id="confidence" class="highlight">---</span>
+                </div>
+            </div>
+            
+            <div class="controls">
+                <button id="start-btn" class="btn"><i class="fas fa-play"></i> Start Detection</button>
+                <button id="stop-btn" class="btn btn-secondary" style="display:none;"><i class="fas fa-stop"></i> Stop</button>
+            </div>
+        </div>
+        
+        <div class="detection-tips card mt-4">
+            <h3><i class="fas fa-lightbulb"></i> Tips for Better Detection</h3>
+            <ul>
+                <li>Ensure good lighting on your hands</li>
+                <li>Position your hand clearly in the frame</li>
+                <li>Make gestures deliberately and hold briefly</li>
+                <li>Keep a neutral background if possible</li>
+            </ul>
+        </div>
+    </div>
+</div>
+
+<script src="{{ url_for('static', filename='detect.js') }}"></script>
+{% endblock %}

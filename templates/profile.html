@@ -1,0 +1,107 @@
+
+{% extends "base.html" %}
+
+{% block title %}My Profile - Sign Language AI{% endblock %}
+
+{% block content %}
+
+<div class="container">
+
+    <div class="profile-container">
+
+        <div class="profile-header">
+            <div class="profile-avatar">
+                <i class="fas fa-user"></i>
+            </div>
+
+            <h1>My Profile</h1>
+            <p>Manage your personal account</p>
+        </div>
+
+        <div class="profile-card">
+
+            <!-- PERSONAL INFORMATION -->
+            <div class="profile-info">
+                <h2>Personal Information</h2>
+
+                <div class="profile-detail">
+                    <span><i class="fas fa-user"></i> Full Name</span>
+                    <strong>{{ user.name }}</strong>
+                </div>
+
+                <div class="profile-detail">
+                    <span><i class="fas fa-envelope"></i> Email Address</span>
+                    <strong>{{ user.email }}</strong>
+                </div>
+
+                <div class="profile-detail">
+                    <span><i class="fas fa-calendar"></i> Account Created</span>
+                    <strong>
+                        {{ user.created_at.strftime('%d %B %Y') if user.created_at else 'Not available' }}
+                    </strong>
+                </div>
+            </div>
+
+            <!-- USER ACTIVITY -->
+            <div class="profile-info">
+                <h2>My Activity</h2>
+
+                <div class="profile-stats">
+
+                    <div class="profile-stat">
+                        <i class="fas fa-chart-bar"></i>
+                        <h3>{{ total_predictions }}</h3>
+                        <p>Total Predictions</p>
+                    </div>
+
+                    <div class="profile-stat">
+                        <i class="fas fa-check-circle"></i>
+                        <h3>{{ successful_predictions }}</h3>
+                        <p>Successful</p>
+                    </div>
+
+                    <div class="profile-stat">
+                        <i class="fas fa-exclamation-circle"></i>
+                        <h3>{{ failed_predictions }}</h3>
+                        <p>Failed</p>
+                    </div>
+
+                </div>
+            </div>
+
+            <!-- PROFILE ACTIONS -->
+            <div class="profile-actions">
+
+                <a href="{{ url_for('edit_profile') }}" class="btn btn-primary">
+                    <i class="fas fa-user-edit"></i> Edit Profile
+                </a>
+
+                <a href="{{ url_for('change_password') }}" class="btn btn-primary">
+                    <i class="fas fa-lock"></i> Change Password
+                </a>
+
+                <a href="{{ url_for('history') }}" class="btn btn-primary">
+                    <i class="fas fa-history"></i> My History
+                </a>
+
+                <a href="{{ url_for('statistics') }}" class="btn btn-primary">
+                    <i class="fas fa-chart-pie"></i> My Statistics
+                </a>
+
+                <a href="{{ url_for('logout') }}" class="btn btn-danger">
+                    <i class="fas fa-sign-out-alt"></i> Logout
+                </a>
+
+                <a href="{{ url_for('delete_account') }}" class="btn btn-danger">
+                    <i class="fas fa-trash"></i> Delete Account
+                </a>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
+{% endblock %}

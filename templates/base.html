@@ -1,0 +1,139 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="AI-powered sign language detection and translation system">
+
+    <title>{% block title %}Sign Language AI{% endblock %}</title>
+
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+</head>
+
+<body>
+
+    <nav class="navbar">
+
+        <div class="logo">
+            <h1>
+                <i class="fas fa-hands-helping"></i>
+                Sign Language AI
+            </h1>
+        </div>
+
+        <ul>
+
+            {% if session.get('user_id') %}
+
+                <li>
+                    <a href="{{ url_for('index') }}">
+                        <i class="fas fa-home"></i> Home
+                    </a>
+                </li>
+
+                <li>
+                    <a href="{{ url_for('detect') }}">
+                        <i class="fas fa-camera"></i> Detect
+                    </a>
+                </li>
+
+                <li>
+                    <a href="{{ url_for('gestures') }}">
+                        <i class="fas fa-sign-language"></i> Gestures
+                    </a>
+                </li>
+
+                <li>
+                    <a href="{{ url_for('history') }}">
+                        <i class="fas fa-history"></i> History
+                    </a>
+                </li>
+
+                <!-- PREVIOUS HISTORY LINK -->
+                <li>
+                    <a href="{{ url_for('previous_history') }}">
+                        <i class="fas fa-archive"></i> Previous History
+                    </a>
+                </li>
+
+                <li>
+                    <a href="{{ url_for('statistics') }}">
+                        <i class="fas fa-chart-bar"></i> Statistics
+                    </a>
+                </li>
+
+                <li>
+                    <a href="{{ url_for('about') }}">
+                        <i class="fas fa-info-circle"></i> About
+                    </a>
+                </li>
+
+                <!-- PROFILE LINK -->
+                <li>
+                    <a href="{{ url_for('profile') }}">
+                        <i class="fas fa-user-circle"></i> My Profile
+                    </a>
+                </li>
+
+                <li>
+                    <a href="{{ url_for('logout') }}" class="logout-link">
+                        <i class="fas fa-sign-out-alt"></i> Logout
+                    </a>
+                </li>
+
+            {% else %}
+
+                <li>
+                    <a href="{{ url_for('login') }}">
+                        <i class="fas fa-sign-in-alt"></i> Login
+                    </a>
+                </li>
+
+                <li>
+                    <a href="{{ url_for('register') }}">
+                        <i class="fas fa-user-plus"></i> Register
+                    </a>
+                </li>
+
+            {% endif %}
+
+        </ul>
+
+    </nav>
+
+    <main class="container">
+
+        {% block content %}{% endblock %}
+
+    </main>
+
+    <footer>
+
+        <div class="footer-content">
+
+            <p>© 2025 Sign Language AI | Developed by Namith</p>
+
+            <div class="social-links">
+
+                <a href="#" aria-label="GitHub">
+                    <i class="fab fa-github"></i>
+                </a>
+
+                <a href="#" aria-label="LinkedIn">
+                    <i class="fab fa-linkedin"></i>
+                </a>
+
+                <a href="#" aria-label="Twitter">
+                    <i class="fab fa-twitter"></i>
+                </a>
+
+            </div>
+
+        </div>
+
+    </footer>
+
+</body>
+</html>

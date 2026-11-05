@@ -1,0 +1,44 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="container">
+    <div class="page-header">
+        <h2><i class="fas fa-history"></i> Prediction History</h2>
+        <p class="subtitle">Review your past sign language detection results</p>
+    </div>
+    
+    <div class="table-container">
+        <table>
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Label</th>
+                    <th>Confidence</th>
+                    <th>Detected</th>
+                    <th>Time</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for p in predictions.items %}
+                <tr>
+                    <td>{{ p.id }}</td>
+                    <td><span class="label-badge">{{ p.label }}</span></td>
+                    <td>{{ "%.2f"|format(p.confidence or 0) }}</td>
+                    <td>{% if p.landmarks_detected %}<span class="status-badge success">Yes</span>{% else %}<span class="status-badge error">No</span>{% endif %}</td>
+                    <td>{{ p.timestamp.strftime("%Y-%m-%d %H:%M:%S") }}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+    
+    <div class="pagination">
+        {% if predictions.has_prev %}
+            <a href="?page={{ predictions.prev_num }}" class="pagination-btn"><i class="fas fa-chevron-left"></i> Previous</a>
+        {% endif %}
+        <span class="pagination-info">Page {{ predictions.page }} of {{ predictions.pages }}</span>
+        {% if predictions.has_next %}
+            <a href="?page={{ predictions.next_num }}" class="pagination-btn">Next <i class="fas fa-chevron-right"></i></a>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}

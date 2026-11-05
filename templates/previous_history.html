@@ -1,0 +1,75 @@
+
+{% extends "base.html" %}
+
+{% block content %}
+<div class="container">
+    <div class="page-header">
+        <h1>Previous History</h1>
+        <p>Prediction records saved before individual accounts were introduced.</p>
+    </div>
+
+    {% if predictions.items %}
+    <div class="table-container">
+        <table class="history-table">
+            <thead>
+                <tr>
+                    <th>#</th>
+                    <th>Gesture</th>
+                    <th>Confidence</th>
+                    <th>Status</th>
+                    <th>Date &amp; Time</th>
+                </tr>
+            </thead>
+
+            <tbody>
+                {% for prediction in predictions.items %}
+                <tr>
+                    <td>{{ prediction.id }}</td>
+                    <td>{{ prediction.label }}</td>
+                    <td>
+                        {% if prediction.confidence is not none %}
+                            {{ "%.2f"|format(prediction.confidence * 100) }}%
+                        {% else %}
+                            —
+                        {% endif %}
+                    </td>
+                    <td>
+                        {% if prediction.landmarks_detected %}
+                            Successful
+                        {% else %}
+                            No hand detected
+                        {% endif %}
+                    </td>
+                    <td>
+                        {{ prediction.timestamp.strftime("%d-%m-%Y %I:%M %p") if prediction.timestamp else "—" }}
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+
+    <div class="pagination">
+        {% if predictions.has_prev %}
+            <a href="{{ url_for('previous_history', page=predictions.prev_num) }}">
+                Previous
+            </a>
+        {% endif %}
+
+        <span>Page {{ predictions.page }} of {{ predictions.pages }}</span>
+
+        {% if predictions.has_next %}
+            <a href="{{ url_for('previous_history', page=predictions.next_num) }}">
+                Next
+            </a>
+        {% endif %}
+    </div>
+
+    {% else %}
+    <div class="empty-state">
+        <h3>No previous records found</h3>
+        <p>There are no unassigned prediction records in the database.</p>
+    </div>
+    {% endif %}
+</div>
+{% endblock %}

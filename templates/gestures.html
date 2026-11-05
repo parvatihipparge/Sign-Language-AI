@@ -1,0 +1,69 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="container">
+    <div class="page-header">
+        <h2><i class="fas fa-hand-paper"></i> Gesture Library</h2>
+        <p class="subtitle">Browse our collection of sign language gestures</p>
+    </div>
+    
+    <div class="filter-section">
+        <label for="category-filter"><i class="fas fa-filter"></i> Filter by category:</label>
+        <select id="category-filter" onchange="filterGestures()">
+            <option value="">All Categories</option>
+            {% for cat in categories %}
+                <option value="{{ cat }}" {% if selected_category == cat %}selected{% endif %}>{{ cat }}</option>
+            {% endfor %}
+        </select>
+    </div>
+    
+    <div class="gestures-grid">
+        {% for g in gestures %}
+        <div class="gesture-card" data-category="{{ g.category }}">
+            <div class="gesture-header">
+                <h3><i class="fas fa-hand-point-right"></i> {{ g.name }}</h3>
+                <span class="category-badge">{{ g.category }}</span>
+            </div>
+            <p>{{ g.description }}</p>
+            {% if g.image_path %}
+            <div class="gesture-image">
+                <img src="{{ g.image_path }}" alt="{{ g.name }}" loading="lazy">
+            </div>
+            {% endif %}
+        </div>
+        {% endfor %}
+    </div>
+    
+    <div class="no-results" style="display: none;">
+        <i class="fas fa-search"></i>
+        <p>No gestures found for this category</p>
+    </div>
+</div>
+
+<script>
+function filterGestures() {
+    const filter = document.getElementById('category-filter').value;
+    const cards = document.querySelectorAll('.gesture-card');
+    const noResults = document.querySelector('.no-results');
+    let visibleCount = 0;
+    
+    cards.forEach(card => {
+        if (!filter || card.dataset.category === filter) {
+            card.style.display = 'block';
+            visibleCount++;
+        } else {
+            card.style.display = 'none';
+        }
+    });
+    
+    // Show "no results" message if no cards are visible
+    if (visibleCount === 0 && filter) {
+        noResults.style.display = 'block';
+    } else {
+        noResults.style.display = 'none';
+    }
+}
+
+// Initialize filter on page load
+document.addEventListener('DOMContentLoaded', filterGestures);
+</script>
+{% endblock %}

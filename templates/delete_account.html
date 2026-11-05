@@ -1,0 +1,91 @@
+
+{% extends "base.html" %}
+
+{% block title %}Delete Account | Sign Language AI{% endblock %}
+
+{% block content %}
+
+<div class="container">
+
+    <div class="auth-container">
+
+        <div class="auth-card">
+
+            <div class="auth-header">
+                <i class="fas fa-exclamation-triangle" style="color: #dc3545;"></i>
+                <h2>Delete Account</h2>
+                <p>This action cannot be undone.</p>
+            </div>
+
+            {% with messages = get_flashed_messages(with_categories=true) %}
+                {% if messages %}
+                    {% for category, message in messages %}
+                        <div class="alert alert-{{ category }}">
+                            {{ message }}
+                        </div>
+                    {% endfor %}
+                {% endif %}
+            {% endwith %}
+
+            <div class="delete-warning">
+                <h3>Are you sure?</h3>
+
+                <p>Deleting your account will permanently remove:</p>
+
+                <ul>
+                    <li>Your account information</li>
+                    <li>Your personal prediction history</li>
+                    <li>Your account access</li>
+                </ul>
+
+                <p><strong>This action cannot be reversed.</strong></p>
+            </div>
+
+            <form method="POST" action="{{ url_for('delete_account') }}">
+
+                <div class="form-group">
+                    <label for="current_password">Current Password</label>
+                    <input
+                        type="password"
+                        id="current_password"
+                        name="current_password"
+                        placeholder="Enter your current password"
+                        required
+                    >
+                </div>
+
+                <div class="form-group">
+                    <label for="confirmation">
+                        Type DELETE to confirm
+                    </label>
+
+                    <input
+                        type="text"
+                        id="confirmation"
+                        name="confirmation"
+                        placeholder="Type DELETE"
+                        required
+                    >
+                </div>
+
+                <button
+                    type="submit"
+                    class="btn btn-danger"
+                    onclick="return confirm('Are you absolutely sure you want to permanently delete your account?');"
+                >
+                    <i class="fas fa-trash"></i> Permanently Delete Account
+                </button>
+
+                <a href="{{ url_for('profile') }}" class="btn btn-secondary">
+                    Cancel
+                </a>
+
+            </form>
+
+        </div>
+
+    </div>
+
+</div>
+
+{% endblock %}

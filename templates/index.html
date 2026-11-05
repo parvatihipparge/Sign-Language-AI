@@ -1,0 +1,29 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="hero">
+    <h1>Welcome to AI-Based Sign Language Detection</h1>
+    <p>This system recognizes sign language gestures in real time using deep learning and MediaPipe hand tracking, making communication more accessible for everyone.</p>
+    <div class="hero-buttons">
+        <a href="{{ url_for('detect') }}" class="btn pulse"><i class="fas fa-video"></i> Start Detection</a>
+        <a href="{{ url_for('gestures') }}" class="btn btn-secondary"><i class="fas fa-sign-language"></i> View Gestures</a>
+    </div>
+</div>
+
+<div class="features-section">
+    <div class="card">
+        <i class="fas fa-camera fa-2x mb-2" style="color: var(--primary);"></i>
+        <h3>Real-time Detection</h3>
+        <p>Instantly recognize sign language gestures through your webcam with high accuracy.</p>
+    </div>
+    <div class="card">
+        <i class="fas fa-history fa-2x mb-2" style="color: var(--secondary);"></i>
+        <h3>Detection History</h3>
+        <p>Review your past detection sessions and track your progress over time.</p>
+    </div>
+    <div class="card">
+        <i class="fas fa-chart-bar fa-2x mb-2" style="color: var(--accent);"></i>
+        <h3>Usage Statistics</h3>
+        <p>Visualize your usage patterns and most frequently detected gestures.</p>
+    </div>
+</div>
+{% endblock %}

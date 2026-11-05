@@ -1,0 +1,9 @@
+flask
+pillow
+opencv-python
+torch
+numpy
+mediapipe
+gunicorn   # optional for production
+transformers   # optional — only if using ViT approach
+torchvision
