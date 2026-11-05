@@ -57,16 +57,41 @@ CLASS_NAMES = [
 
 app = Flask(__name__)
 
+# Secret key
 app.config["SECRET_KEY"] = os.environ.get(
     "SECRET_KEY",
     "sign-language-ai-development-secret-key"
 )
 
-app.config["SQLALCHEMY_DATABASE_URI"] = "sqlite:///sign_language.db"
+# Database configuration
+DATABASE_URL = os.environ.get("DATABASE_URL")
+
+if DATABASE_URL:
+    # Render PostgreSQL
+    if DATABASE_URL.startswith("postgres://"):
+        DATABASE_URL = DATABASE_URL.replace(
+            "postgres://",
+            "postgresql://",
+            1
+        )
+
+    app.config["SQLALCHEMY_DATABASE_URI"] = DATABASE_URL
+
+    print("Using PostgreSQL database")
+
+else:
+    # Local development: preserve existing SQLite database
+    app.config["SQLALCHEMY_DATABASE_URI"] = "sqlite:///sign_language.db"
+
+    print("Using local SQLite database")
+
 app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
 
-db = SQLAlchemy(app)
+app.config["SQLALCHEMY_ENGINE_OPTIONS"] = {
+    "pool_pre_ping": True
+}
 
+db = SQLAlchemy(app)
 
 # =========================================
 # DATABASE MODELS
@@ -1065,32 +1090,40 @@ def clear_history():
 # DATABASE INITIALIZATION AND MIGRATION
 # =========================================
 
+
+# =========================================
+# DATABASE INITIALIZATION AND MIGRATION
+# =========================================
+
 with app.app_context():
 
     db.create_all()
 
-    # Add user_id to an existing prediction table
-    # without deleting existing prediction records.
+    # SQLite-specific migration.
+    # PostgreSQL gets the complete schema through db.create_all()
+    # when using a fresh production database.
 
-    columns = db.session.execute(
-        text("PRAGMA table_info(prediction)")
-    ).fetchall()
+    if db.engine.dialect.name == "sqlite":
 
-    column_names = [column[1] for column in columns]
+        columns = db.session.execute(
+            text("PRAGMA table_info(prediction)")
+        ).fetchall()
 
-    if "user_id" not in column_names:
+        column_names = [column[1] for column in columns]
 
-        db.session.execute(
-            text(
-                "ALTER TABLE prediction "
-                "ADD COLUMN user_id INTEGER "
-                "REFERENCES user(id)"
+        if "user_id" not in column_names:
+
+            db.session.execute(
+                text(
+                    "ALTER TABLE prediction "
+                    "ADD COLUMN user_id INTEGER "
+                    "REFERENCES user(id)"
+                )
             )
-        )
 
-        db.session.commit()
+            db.session.commit()
 
-        print("Prediction table migrated successfully!")
+            print("SQLite prediction table migrated successfully!")
 
     initialize_gestures()
 
@@ -1102,5 +1135,8 @@ with app.app_context():
 # =========================================
 
 if __name__ == "__main__":
-
-    app.run(debug=True)
+    app.run(
+        host="0.0.0.0",
+        port=int(os.environ.get("PORT", 5000)),
+        debug=False
+    )

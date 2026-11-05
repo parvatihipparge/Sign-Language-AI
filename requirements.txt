@@ -7,3 +7,4 @@ mediapipe==0.10.21
 opencv-python-headless==4.11.0.86
 Pillow==13.0.0
 torch==2.15.0
+psycopg2-binary==2.9.10
